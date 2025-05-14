@@ -1,10 +1,8 @@
+from textual import on
 from textual.app import App, ComposeResult
-from textual.widgets import Static, Input, Button, Select, Label
-from textual.containers import Vertical
+from textual.widgets import Static, Button, Select, Label, OptionList
 from textual.screen import Screen
-from textual.message import Message
 from compte import Account
-from typing_extensions import override
 
 class MainScreen(Screen):
     BINDINGS = [("q", "quit", "Quitter")]
@@ -12,31 +10,42 @@ class MainScreen(Screen):
     def compose(self) -> ComposeResult:
         self.account = Account("032 12 345 67")
         sub_pages = ["recharge", "achat", "service", "compte"]
+        self.pages = [k for k, v in list(self.app.SCREENS.items()) if k in sub_pages]
 
         yield Static(f"Votre Numero : {self.account.numero}", id="title")
-        yield Select([(k, k) for k, v in list(self.app.SCREENS.items()) if k in sub_pages], prompt="Choice", id="selector")
+        yield OptionList(*self.pages, id="selector")
         yield Button("Submit", id="submit")
         yield Static("", id="output")
 
+    def on_mount(self) -> None:
+        self.query_one(OptionList).border_title = "Next page"
+
+    @on(OptionList.OptionSelected)
+    def update_selected_view(self) -> None:
+        self.push_screen(self.pages[self.query_one("#selector", OptionList).highlighted])
+
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        selector = self.query_one("#selector", Select)
+        selected_name = self.query_one("#selector", Select).value
         output = self.query_one("#output", Static)
-        
-        selected_name = selector.value
 
         try:
             output.update(f"[green]Redirection vers: {selected_name}[/green]")
 
             if event.button.id == "submit":
-                self.app.push_screen(selected_name)
+                self.push_screen(selected_name)
 
         except Exception as e:
             output.update(f"[red]Erreur : {e}[/red]")
 
+    def push_screen(self, selected_name: str) -> None:
+        self.app.push_screen(selected_name)
+
 
 class SubScreen(Screen):
-    def compose(self, name: str) -> ComposeResult:
-        yield Label(f"{name} du page")
+    name: str
+
+    def compose(self) -> ComposeResult:
+        yield Label(f"{self.name} du page")
         yield Button("Retour", id="go-back")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
@@ -45,27 +54,16 @@ class SubScreen(Screen):
 
 
 class RechargeScreen(SubScreen):
-    @override
-    def compose(self):
-        return super().compose("rechage")
-
+    name = "rechage"
 
 class AchatScreen(SubScreen):
-    @override
-    def compose(self):
-        return super().compose("achat")
-
+    name = "achat"
 
 class ServiceScreen(SubScreen):
-    @override
-    def compose(self):
-        return super().compose("service")
-
+    name = "service"
 
 class CompteScreen(SubScreen):
-    @override
-    def compose(self):
-        return super().compose("compte")
+    name = "compte"
 
 
 class MainApp(App):
