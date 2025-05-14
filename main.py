@@ -11,7 +11,7 @@ class MainScreen(Screen):
 
     def compose(self) -> ComposeResult:
         self.account = Account("032 12 345 67")
-        sub_pages = ["recharge"]
+        sub_pages = ["recharge", "achat", "service", "compte"]
 
         yield Static(f"Votre Numero : {self.account.numero}", id="title")
         yield Select([(k, k) for k, v in list(self.app.SCREENS.items()) if k in sub_pages], prompt="Choice", id="selector")
@@ -50,6 +50,24 @@ class RechargeScreen(SubScreen):
         return super().compose("rechage")
 
 
+class AchatScreen(SubScreen):
+    @override
+    def compose(self):
+        return super().compose("achat")
+
+
+class ServiceScreen(SubScreen):
+    @override
+    def compose(self):
+        return super().compose("service")
+
+
+class CompteScreen(SubScreen):
+    @override
+    def compose(self):
+        return super().compose("compte")
+
+
 class MainApp(App):
     CSS = """
     Screen {
@@ -65,7 +83,10 @@ class MainApp(App):
 
     SCREENS = {
         "main": MainScreen,
-        "recharge": RechargeScreen
+        "recharge": RechargeScreen,
+        "achat": AchatScreen,
+	    "service": ServiceScreen,
+	    "compte": CompteScreen,
     }
 
     def on_mount(self) -> None:
