@@ -4,6 +4,7 @@ from textual.containers import Vertical
 from textual.screen import Screen
 from textual.message import Message
 from compte import Account
+from typing_extensions import override
 
 class MainScreen(Screen):
     BINDINGS = [("q", "quit", "Quitter")]
@@ -33,14 +34,20 @@ class MainScreen(Screen):
             output.update(f"[red]Erreur : {e}[/red]")
 
 
-class RechargeScreen(Screen):
-    def compose(self) -> ComposeResult:
-        yield Label("Détails du paquet : requests")
+class SubScreen(Screen):
+    def compose(self, name: str) -> ComposeResult:
+        yield Label(f"{name} du page")
         yield Button("Retour", id="go-back")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "go-back":
             self.app.pop_screen()
+
+
+class RechargeScreen(SubScreen):
+    @override
+    def compose(self):
+        return super().compose("rechage")
 
 
 class MainApp(App):
