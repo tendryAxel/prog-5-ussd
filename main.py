@@ -10,15 +10,10 @@ class MainScreen(Screen):
 
     def compose(self) -> ComposeResult:
         self.account = Account("032 12 345 67")
-        self.sub_pages = {
-            "recharge": "recharge",
-            "achat": "achat",
-            "service": "service",
-            "compte": "compte"
-        }
+        sub_pages = []
 
         yield Static(f"Votre Numero : {self.account.numero}", id="title")
-        yield Select(list(self.sub_pages.items()), prompt="Choice", id="selector")
+        yield Select([(k, k) for k, v in list(self.app.SCREENS.items())], prompt="Choice", id="selector")
         yield Button("Submit", id="submit")
         yield Static("", id="output")
 
