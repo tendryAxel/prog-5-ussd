@@ -1,4 +1,4 @@
-from textual import on
+from textual import on, events
 from textual.app import App, ComposeResult
 from textual.widgets import Static, Button, Label, OptionList
 from textual.screen import Screen
@@ -36,6 +36,10 @@ class SubScreen(Screen):
 
     def push_screen(self, selected_name: str) -> None:
         self.app.push_screen(selected_name)
+
+    def on_key(self, event: events.Key) -> None:
+        if event.key == "0":
+            self.app.pop_screen()
 
 
 class MainScreen(SubScreen):
