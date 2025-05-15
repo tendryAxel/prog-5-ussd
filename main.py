@@ -28,14 +28,11 @@ class SubScreen(Screen):
     def update_selected_view(self) -> None:
         output = self.query_one("#output", Static)
         output.update("Redirected")
-        self.push_screen(self.pages[self.query_one("#selector", OptionList).highlighted])
+        self.app.push_screen(self.pages[self.query_one("#selector", OptionList).highlighted])
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "go-back":
             self.app.pop_screen()
-
-    def push_screen(self, selected_name: str) -> None:
-        self.app.push_screen(selected_name)
 
     def on_key(self, event: events.Key) -> None:
         if event.key == "0":
