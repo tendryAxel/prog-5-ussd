@@ -26,23 +26,13 @@ class SubScreen(Screen):
 
     @on(OptionList.OptionSelected)
     def update_selected_view(self) -> None:
+        output = self.query_one("#output", Static)
+        output.update("Redirected")
         self.push_screen(self.pages[self.query_one("#selector", OptionList).highlighted])
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        selected_name = self.query_one("#selector", OptionList).highlighted
-        output = self.query_one("#output", Static)
-
         if event.button.id == "go-back":
             self.app.pop_screen()
-
-        try:
-            output.update(f"[green]Redirection vers: {selected_name}[/green]")
-
-            if event.button.id == "submit":
-                self.push_screen(selected_name)
-
-        except Exception as e:
-            output.update(f"[red]Erreur : {e}[/red]")
 
     def push_screen(self, selected_name: str) -> None:
         self.app.push_screen(selected_name)
@@ -58,7 +48,6 @@ class MainScreen(SubScreen):
         self.pages = [k for k, v in list(self.app.SCREENS.items()) if k in sub_pages]
 
         yield Static(f"Votre Numero : {self.account.numero}", id="title")
-        yield Button("Submit", id="submit")
         yield Static("", id="output")
 
 class RechargeScreen(SubScreen):
