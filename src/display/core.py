@@ -3,7 +3,7 @@ from textual.app import ComposeResult
 from textual.screen import Screen
 from textual.widgets import Static, Label, OptionList, Button
 
-from compte import Account
+from src.compte import Account
 
 
 class SubScreen(Screen):

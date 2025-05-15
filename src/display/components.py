@@ -2,7 +2,7 @@ from textual.app import ComposeResult
 from textual.widgets import Static
 from typing_extensions import override
 
-from display.core import SubScreen
+from src.display.core import SubScreen
 
 
 class MainScreen(SubScreen):
