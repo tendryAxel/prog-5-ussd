@@ -1,6 +1,6 @@
 import pytest
 
-from src.utils import flatten_dict
+from src.utils import flatten_dict, extract_dict
 
 
 @pytest.mark.parametrize("input_dict, expected", [
@@ -85,3 +85,90 @@ from src.utils import flatten_dict
 ])
 def test_aplatir_dictionary_cle(input_dict, expected):
     assert flatten_dict(input_dict) == expected
+
+@pytest.mark.parametrize("input_dict, expected", [
+    # Cas simple sans dictionnaires
+    (
+        {"a": 1, "b": 2},
+        {"a": 1, "b": 2}
+    ),
+
+    # Dictionnaire avec "content"
+    (
+        {"a": "b", "d": {"content": "e", "f": "g"}},
+        {"a": "b", "d": "e", "f": "g"}
+    ),
+
+    # Dictionnaire avec "content" uniquement
+    (
+        {"d": {"content": "e"}},
+        {"d": "e"}
+    ),
+
+    # Dictionnaire sans "content"
+    (
+        {"d": {"x": "y"}},
+        {"d": {"x": "y"}}
+    ),
+
+    # Plusieurs clés avec content
+    (
+        {
+            "a": "A",
+            "b": {
+                "content": "B",
+                "extra": "E"
+            },
+            "c": {
+                "content": "C"
+            }
+        },
+        {
+            "a": "A",
+            "b": "B",
+            "extra": "E",
+            "c": "C"
+        }
+    ),
+
+    # Clé simple + promotion de clé conflictuelle
+    (
+        {
+            "conflict": "outside",
+            "x": {
+                "content": "inside",
+                "conflict": "shadow"
+            }
+        },
+        {
+            "conflict": "shadow",  # "shadow" écrase "outside"
+            "x": "inside"
+        }
+    ),
+
+    # Dictionnaire vide
+    (
+        {},
+        {}
+    ),
+
+    # peut gerer les sub content
+    (
+            {
+                "conflict": "outside",
+                "x": {
+                    "content": "inside",
+                    "conflict": {
+                        "content": "shadow",
+                    }
+                }
+            },
+            {
+                "conflict": "shadow",
+                "x": "inside"
+            }
+    ),
+])
+def test_extract_dictionary(input_dict, expected):
+    assert extract_dict(extract_dict(input_dict)) == expected
+

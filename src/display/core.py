@@ -9,13 +9,13 @@ from src.compte import Account
 class SubScreen(Screen):
     name: str
     account: Account
+    sub_pages = []
 
     def main(self):
         yield Static("", id="output")
 
     def compose(self) -> ComposeResult:
-        sub_pages = ["recharge", "achat", "service", "compte"]
-        self.pages = [k for k, v in list(self.app.SCREENS.items()) if k in sub_pages]
+        self.pages = [k for k, v in list(self.app.SCREENS.items()) if k in self.sub_pages]
 
         yield Label(f"{self.name} du page")
         yield OptionList(*self.pages, id="selector")

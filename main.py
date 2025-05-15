@@ -3,14 +3,17 @@ from textual.app import App
 from src.compte import Account
 from src.display import components
 from src.display.core import SubScreen
-from src.utils import flatten_dict
+from src.utils import extract_dict
 
 structure = {
     "main": components.MainScreen,
     "recharge": components.RechargeScreen,
     "achat": components.AchatScreen,
     "service": components.ServiceScreen,
-    "compte": components.CompteScreen,
+    "compte": {
+        "content": components.CompteScreen,
+        "compte_detail": components.CompteDetailScreen,
+    }
 }
 
 class MainApp(App):
@@ -26,7 +29,7 @@ class MainApp(App):
     }
     """
 
-    SCREENS = flatten_dict(structure)
+    SCREENS = extract_dict(structure)
 
     def on_mount(self) -> None:
         self.push_screen("main")
