@@ -8,6 +8,7 @@ from compte import Account
 
 class SubScreen(Screen):
     name: str
+    account: Account
 
     def main(self):
         yield Static("", id="output")
@@ -44,10 +45,6 @@ class MainScreen(SubScreen):
 
     @override
     def main(self) -> ComposeResult:
-        self.account = Account("032 12 345 67")
-        sub_pages = ["recharge", "achat", "service", "compte"]
-        self.pages = [k for k, v in list(self.app.SCREENS.items()) if k in sub_pages]
-
         yield Static(f"Votre Numero : {self.account.numero}", id="title")
         yield Static("", id="output")
 
@@ -62,7 +59,6 @@ class ServiceScreen(SubScreen):
 
 class CompteScreen(SubScreen):
     name = "compte"
-
 
 class MainApp(App):
     CSS = """
@@ -88,8 +84,8 @@ class MainApp(App):
     def on_mount(self) -> None:
         self.push_screen("main")
 
-
 if __name__ == "__main__":
+    SubScreen.account = Account("032 12 345 67")
     app = MainApp()
     app.run()
 
