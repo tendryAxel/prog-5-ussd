@@ -1,21 +1,25 @@
 from textual import on
 from textual.app import App, ComposeResult
-from textual.widgets import Static, Button, Select, Label, OptionList
+from textual.widgets import Static, Button, Label, OptionList
 from textual.screen import Screen
+from typing_extensions import override
+
 from compte import Account
 
-class MainScreen(Screen):
-    BINDINGS = [("q", "quit", "Quitter")]
+class SubScreen(Screen):
+    name: str
+
+    def main(self):
+        yield Static("", id="output")
 
     def compose(self) -> ComposeResult:
-        self.account = Account("032 12 345 67")
         sub_pages = ["recharge", "achat", "service", "compte"]
         self.pages = [k for k, v in list(self.app.SCREENS.items()) if k in sub_pages]
 
-        yield Static(f"Votre Numero : {self.account.numero}", id="title")
+        yield Label(f"{self.name} du page")
         yield OptionList(*self.pages, id="selector")
-        yield Button("Submit", id="submit")
-        yield Static("", id="output")
+        yield from self.main()
+        yield Button("Retour", id="go-back")
 
     def on_mount(self) -> None:
         self.query_one(OptionList).border_title = "Next page"
@@ -25,8 +29,11 @@ class MainScreen(Screen):
         self.push_screen(self.pages[self.query_one("#selector", OptionList).highlighted])
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        selected_name = self.query_one("#selector", Select).value
+        selected_name = self.query_one("#selector", OptionList).highlighted
         output = self.query_one("#output", Static)
+
+        if event.button.id == "go-back":
+            self.app.pop_screen()
 
         try:
             output.update(f"[green]Redirection vers: {selected_name}[/green]")
@@ -41,17 +48,18 @@ class MainScreen(Screen):
         self.app.push_screen(selected_name)
 
 
-class SubScreen(Screen):
-    name: str
+class MainScreen(SubScreen):
+    BINDINGS = [("q", "quit", "Quitter")]
 
-    def compose(self) -> ComposeResult:
-        yield Label(f"{self.name} du page")
-        yield Button("Retour", id="go-back")
+    @override
+    def main(self) -> ComposeResult:
+        self.account = Account("032 12 345 67")
+        sub_pages = ["recharge", "achat", "service", "compte"]
+        self.pages = [k for k, v in list(self.app.SCREENS.items()) if k in sub_pages]
 
-    def on_button_pressed(self, event: Button.Pressed) -> None:
-        if event.button.id == "go-back":
-            self.app.pop_screen()
-
+        yield Static(f"Votre Numero : {self.account.numero}", id="title")
+        yield Button("Submit", id="submit")
+        yield Static("", id="output")
 
 class RechargeScreen(SubScreen):
     name = "rechage"
