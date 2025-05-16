@@ -49,6 +49,24 @@ class DefaultScreen(Screen):
     def action_back(self) -> None:
         self.app.pop_screen()
 
+    @staticmethod
+    def project_structure_scan(
+            project_structure: dict[str, "DefaultScreen"],
+            content_key_match: str = "content"
+    ) -> None:
+        if content_key_match in project_structure.keys():
+            project_structure[content_key_match].pages = [
+                key
+                for key in project_structure.keys()
+                if key != content_key_match
+            ]
+            print(project_structure[content_key_match].name)
+            print(project_structure[content_key_match].pages)
+            for page in project_structure[content_key_match].pages:
+                sub_structure = project_structure[page]
+                if isinstance(sub_structure, dict):
+                    DefaultScreen.project_structure_scan(sub_structure)
+
 
 class SubScreen(DefaultScreen):
     def footer(self) -> ComposeResult:
