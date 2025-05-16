@@ -1,6 +1,6 @@
 import pytest
 
-from src.utils import flatten_dict, extract_dict
+from src.utils import flatten_dict, extract_dict, max_depth_dict
 
 
 @pytest.mark.parametrize("input_dict, expected", [
@@ -168,7 +168,49 @@ def test_aplatir_dictionary_cle(input_dict, expected):
                 "x": "inside"
             }
     ),
+    (
+        {
+            "main": "components.MainScreen",
+            "recharge": "components.RechargeScreen",
+            "achat": "components.AchatScreen",
+            "service": "components.ServiceScreen",
+            "compte": {
+                "content": "components.CompteScreen",
+                "compte_detail": {
+                    "content": "components.CompteDetailScreen",
+                },
+            }
+        },
+        {
+            "main": "components.MainScreen",
+            "recharge": "components.RechargeScreen",
+            "achat": "components.AchatScreen",
+            "service": "components.ServiceScreen",
+            "compte": "components.CompteScreen",
+            "compte_detail": "components.CompteDetailScreen",
+        }
+    ),
 ])
 def test_extract_dictionary(input_dict, expected):
-    assert extract_dict(extract_dict(input_dict)) == expected
+    assert extract_dict(input_dict) == expected
+
+@pytest.mark.parametrize("input_dict, depth", [
+    (
+        {
+            "main": "components.MainScreen",
+            "recharge": "components.RechargeScreen",
+            "achat": "components.AchatScreen",
+            "service": "components.ServiceScreen",
+            "compte": {
+                "content": "components.CompteScreen",
+                "compte_detail": {
+                    "content": "components.CompteDetailScreen",
+                },
+            }
+        },
+        3,
+    ),
+])
+def test_depth_calcule(input_dict, depth):
+    assert max_depth_dict(input_dict) == depth
 

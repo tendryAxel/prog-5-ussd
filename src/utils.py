@@ -1,3 +1,6 @@
+from functools import reduce
+
+
 def flatten_dict(dictionary: dict) -> dict:
     return {
         k if not isinstance(v, dict) else k2: v2
@@ -7,7 +10,7 @@ def flatten_dict(dictionary: dict) -> dict:
         )
     }
 
-def extract_dict(dictionary: dict, content_key_match: str = "content") -> dict:
+def _extract_dict(dictionary: dict, content_key_match: str = "content") -> dict:
     return {
         k if not (isinstance(v, dict) and content_key_match in v) else sub_k: sub_v
         for k, v in dictionary.items()
@@ -18,3 +21,15 @@ def extract_dict(dictionary: dict, content_key_match: str = "content") -> dict:
             if isinstance(v, dict) and content_key_match in v else [(k, v)]
         )
     }
+
+def extract_dict(dictionary: dict, content_key_match: str = "content") -> dict:
+    return reduce(
+        lambda tmp_dictionary, _: _extract_dict(tmp_dictionary, content_key_match),
+        range(max_depth_dict(dictionary)),
+        dictionary
+    )
+
+def max_depth_dict(dictionary: dict) -> int:
+    return 0 \
+        if (not isinstance(dictionary, dict) or not dictionary) \
+        else 1 + max(max_depth_dict(v) for v in dictionary.values())

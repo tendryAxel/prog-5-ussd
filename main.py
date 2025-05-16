@@ -12,7 +12,9 @@ structure = {
     "service": components.ServiceScreen,
     "compte": {
         "content": components.CompteScreen,
-        "compte_detail": components.CompteDetailScreen,
+        "compte_detail": {
+            "content": components.CompteDetailScreen,
+        },
     }
 }
 
