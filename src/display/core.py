@@ -40,10 +40,11 @@ class DefaultScreen(Screen):
 
     @on(OptionList.OptionSelected)
     def update_selected_view(self) -> None:
-        output = self.query_one("#output", Static)
-        output.update("Redirected")
-        self.app.push_screen(self.pages[self.query_one(
-            "#selector", OptionList).highlighted])
+        if len(self.pages) > 0:
+            output = self.query_one("#output", Static)
+            output.update("Redirected")
+            self.app.push_screen(self.pages[self.query_one(
+                "#selector", OptionList).highlighted])
 
     def action_back(self) -> None:
         self.app.pop_screen()

@@ -1,8 +1,11 @@
+from textual import on
 from textual.app import ComposeResult
+from textual.binding import Binding
 from textual.widgets import Static, OptionList
 from typing_extensions import override
 from textual.widgets.option_list import Option
 
+from src.compte import MvolaOption
 from src.display.core import SubScreen, DefaultScreen
 
 
@@ -44,14 +47,24 @@ class CompteDetailScreen(SubScreen):
 
 class OffreScreen(SubScreen):
     name = "offre"
+    BINDINGS = [
+        Binding("enter", "select", "Select", show=True),
+    ]
+    options = [
+        MvolaOption("MORA 1000", 1000, 1),
+        MvolaOption("MORA 2000", 2000, 4),
+        MvolaOption("MORA 4000", 4000, 10),
+    ]
 
     @override
     def main(self) -> ComposeResult:
-        yield Static(f"Votre solde : {self.account.solde}")
+        yield Static(f"Votre solde : {self.account.solde}", id="solde")
         yield OptionList(
-            Option("MORA 1000 - 1Go + Appels, 1000 Ar"),
-            Option("MORA 2000 - 2Go + Appels, 2000 Ar"),
-            Option("MORA NIGHT - Internet illimité 22h-5h, 500 Ar"),
-            Option("TELMA NET 500 - 500Mo, 1000 Ar"),
-            Option("TELMA COMBO 3000 - 3Go + voix, 3000 Ar")
+            *map(MvolaOption.get_option, self.options),
+            id="select",
         )
+
+    @on(OptionList.OptionSelected)
+    def update_account(self) -> None:
+        self.options[self.query_one("#select", OptionList).highlighted].apply(self.account)
+        self.query_one("#solde", Static).update(f"Votre solde : {self.account.solde}")
