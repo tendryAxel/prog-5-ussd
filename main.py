@@ -6,16 +6,18 @@ from src.display.core import SubScreen
 from src.utils import extract_dict
 
 structure = {
-    "main": components.MainScreen,
-    "recharge": components.RechargeScreen,
-    "achat": components.AchatScreen,
-    "service": components.ServiceScreen,
-    "compte": {
-        "content": components.CompteScreen,
-        "compte_detail": {
-            "content": components.CompteDetailScreen,
-        },
-    }
+    "main": {
+        "content": components.MainScreen,
+        "recharge": components.RechargeScreen,
+        "achat": components.AchatScreen,
+        "service": components.ServiceScreen,
+        "compte": {
+            "content": components.CompteScreen,
+            "compte_detail": {
+                "content": components.CompteDetailScreen,
+            },
+        }
+    },
 }
 
 
