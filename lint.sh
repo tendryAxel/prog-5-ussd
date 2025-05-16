@@ -1,1 +1,1 @@
-flake8 .
+uv run flake8 .
