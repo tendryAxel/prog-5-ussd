@@ -44,6 +44,8 @@ class MainApp(App):
 
 
 if __name__ == "__main__":
+    for main_items in structure.values():
+        DefaultScreen.project_structure_scan(main_items)
     DefaultScreen.account = Account("032 12 345 67")
     app = MainApp()
     app.run()

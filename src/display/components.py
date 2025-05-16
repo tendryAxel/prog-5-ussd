@@ -10,7 +10,6 @@ from src.display.core import SubScreen, DefaultScreen
 
 class MainScreen(DefaultScreen):
     BINDINGS = [("q", "quit", "Quitter")]
-    sub_pages = ["recharge", "achat", "service", "compte"]
 
     @override
     def main(self) -> ComposeResult:
