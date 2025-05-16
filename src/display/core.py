@@ -1,15 +1,18 @@
-from textual import events, on
+from textual import on
 from textual.app import ComposeResult
 from textual.screen import Screen
-from textual.widgets import Static, Label, OptionList, Button
+from textual.widgets import Static, Label, OptionList, Button, Footer, Header
 
 from src.compte import Account
 
 
 class SubScreen(Screen):
-    name: str
+    name: str = "__empty__"
     account: Account
     sub_pages = []
+    BINDINGS = [
+        ("0", "back", "back"),
+    ]
 
     def main(self):
         yield Static("", id="output")
@@ -19,11 +22,13 @@ class SubScreen(Screen):
             k for k, v in list(
                 self.app.SCREENS.items()) if k in self.sub_pages]
 
-        yield Label(f"{self.name} du page")
+        yield Header(show_clock=True)
+        yield Label(f"Page: {self.name}")
+        yield from self.main()
         if len(self.pages) > 0:
             yield OptionList(*self.pages, id="selector")
-        yield from self.main()
         yield Button("Retour", id="go-back")
+        yield Footer()
 
     def on_mount(self) -> None:
         if len(self.pages) > 0:
@@ -40,6 +45,5 @@ class SubScreen(Screen):
         if event.button.id == "go-back":
             self.app.pop_screen()
 
-    def on_key(self, event: events.Key) -> None:
-        if event.key == "0":
-            self.app.pop_screen()
+    def action_back(self) -> None:
+        self.app.pop_screen()
