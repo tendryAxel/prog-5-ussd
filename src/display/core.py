@@ -20,12 +20,14 @@ class SubScreen(Screen):
                 self.app.SCREENS.items()) if k in self.sub_pages]
 
         yield Label(f"{self.name} du page")
-        yield OptionList(*self.pages, id="selector")
+        if len(self.pages) > 0:
+            yield OptionList(*self.pages, id="selector")
         yield from self.main()
         yield Button("Retour", id="go-back")
 
     def on_mount(self) -> None:
-        self.query_one(OptionList).border_title = "Next page"
+        if len(self.pages) > 0:
+            self.query_one(OptionList).border_title = "Next page"
 
     @on(OptionList.OptionSelected)
     def update_selected_view(self) -> None:
