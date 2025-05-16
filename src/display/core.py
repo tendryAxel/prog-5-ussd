@@ -15,7 +15,9 @@ class SubScreen(Screen):
         yield Static("", id="output")
 
     def compose(self) -> ComposeResult:
-        self.pages = [k for k, v in list(self.app.SCREENS.items()) if k in self.sub_pages]
+        self.pages = [
+            k for k, v in list(
+                self.app.SCREENS.items()) if k in self.sub_pages]
 
         yield Label(f"{self.name} du page")
         yield OptionList(*self.pages, id="selector")
@@ -29,7 +31,8 @@ class SubScreen(Screen):
     def update_selected_view(self) -> None:
         output = self.query_one("#output", Static)
         output.update("Redirected")
-        self.app.push_screen(self.pages[self.query_one("#selector", OptionList).highlighted])
+        self.app.push_screen(self.pages[self.query_one(
+            "#selector", OptionList).highlighted])
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "go-back":

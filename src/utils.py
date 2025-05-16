@@ -10,24 +10,32 @@ def flatten_dict(dictionary: dict) -> dict:
         )
     }
 
-def _extract_dict(dictionary: dict, content_key_match: str = "content") -> dict:
+
+def _extract_dict(dictionary: dict,
+                  content_key_match: str = "content") -> dict:
     return {
-        k if not (isinstance(v, dict) and content_key_match in v) else sub_k: sub_v
+        k
+        if not (isinstance(v, dict) and content_key_match in v)
+        else sub_k: sub_v
         for k, v in dictionary.items()
         for sub_k, sub_v in (
             dict(
-                [(k, v[content_key_match])] + [(sk, sv) for sk, sv in v.items() if sk != content_key_match]
+                [(k, v[content_key_match])]
+                + [(sk, sv) for sk, sv in v.items() if sk != content_key_match]
             ).items()
             if isinstance(v, dict) and content_key_match in v else [(k, v)]
         )
     }
 
+
 def extract_dict(dictionary: dict, content_key_match: str = "content") -> dict:
     return reduce(
-        lambda tmp_dictionary, _: _extract_dict(tmp_dictionary, content_key_match),
+        lambda tmp_dictionary, _: _extract_dict(
+            tmp_dictionary, content_key_match),
         range(max_depth_dict(dictionary)),
         dictionary
     )
+
 
 def max_depth_dict(dictionary: dict) -> int:
     return 0 \
