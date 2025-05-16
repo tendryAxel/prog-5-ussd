@@ -8,6 +8,7 @@ class Account:
         self.numero = numero
         self.solde = 0
 
+
 class MvolaOption:
     def __init__(self, name: str, price: float, quantity: float):
         self.uuid = str(uuid.uuid4())

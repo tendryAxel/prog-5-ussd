@@ -3,7 +3,6 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.widgets import Static, OptionList
 from typing_extensions import override
-from textual.widgets.option_list import Option
 
 from src.compte import MvolaOption
 from src.display.core import SubScreen, DefaultScreen
@@ -66,5 +65,8 @@ class OffreScreen(SubScreen):
 
     @on(OptionList.OptionSelected)
     def update_account(self) -> None:
-        self.options[self.query_one("#select", OptionList).highlighted].apply(self.account)
-        self.query_one("#solde", Static).update(f"Votre solde : {self.account.solde}")
+        self.options[
+            self.query_one("#select", OptionList).highlighted
+        ].apply(self.account)
+        self.query_one("#solde", Static).update(
+            f"Votre solde : {self.account.solde}")
