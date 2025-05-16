@@ -8,5 +8,15 @@ dependencies = [
     "pytest>=8.3.5",
     "textual>=3.2.0",
 ]
+
 [tool.pytest.ini_options]
 pythonpath = ["."]
+
+[dependency-groups]
+dev = [
+    "autopep8>=2.3.2",
+    "flake8>=7.2.0",
+]
+
+[tool.autopep8]
+max_line_length = 79

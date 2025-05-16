@@ -18,6 +18,7 @@ structure = {
     }
 }
 
+
 class MainApp(App):
     CSS = """
     Screen {
@@ -36,8 +37,8 @@ class MainApp(App):
     def on_mount(self) -> None:
         self.push_screen("main")
 
+
 if __name__ == "__main__":
     SubScreen.account = Account("032 12 345 67")
     app = MainApp()
     app.run()
-

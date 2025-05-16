@@ -14,18 +14,23 @@ class MainScreen(SubScreen):
         yield Static(f"Votre Numero : {self.account.numero}", id="title")
         yield Static("", id="output")
 
+
 class RechargeScreen(SubScreen):
     name = "rechage"
+
 
 class AchatScreen(SubScreen):
     name = "achat"
 
+
 class ServiceScreen(SubScreen):
     name = "service"
+
 
 class CompteScreen(SubScreen):
     name = "compte"
     sub_pages = ["compte_detail"]
+
 
 class CompteDetailScreen(SubScreen):
     name = "compte detail"
