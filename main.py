@@ -2,14 +2,17 @@ from textual.app import App
 
 from src.compte import Account
 from src.display import components
-from src.display.core import SubScreen
+from src.display.core import DefaultScreen
 from src.utils import extract_dict
 
 structure = {
     "main": {
         "content": components.MainScreen,
         "recharge": components.RechargeScreen,
-        "achat": components.AchatScreen,
+        "achat": {
+            "content": components.AchatScreen,
+            "offre": components.OffreScreen,
+        },
         "service": components.ServiceScreen,
         "compte": {
             "content": components.CompteScreen,
@@ -41,6 +44,6 @@ class MainApp(App):
 
 
 if __name__ == "__main__":
-    SubScreen.account = Account("032 12 345 67")
+    DefaultScreen.account = Account("032 12 345 67")
     app = MainApp()
     app.run()

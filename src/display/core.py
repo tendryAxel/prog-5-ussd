@@ -6,7 +6,7 @@ from textual.widgets import Static, Label, OptionList, Button, Footer, Header
 from src.compte import Account
 
 
-class SubScreen(Screen):
+class DefaultScreen(Screen):
     name: str = "__empty__"
     account: Account
     sub_pages = []
@@ -15,7 +15,10 @@ class SubScreen(Screen):
     ]
 
     def main(self):
-        yield Static("", id="output")
+        yield Static("", id="top-section")
+
+    def footer(self) -> ComposeResult:
+        yield Static("", id="botton-section")
 
     def compose(self) -> ComposeResult:
         self.pages = [
@@ -24,10 +27,11 @@ class SubScreen(Screen):
 
         yield Header(show_clock=True)
         yield Label(f"Page: {self.name}")
+        yield Label("", id="output")
         yield from self.main()
         if len(self.pages) > 0:
             yield OptionList(*self.pages, id="selector")
-        yield Button("Retour", id="go-back")
+        yield from self.footer()
         yield Footer()
 
     def on_mount(self) -> None:
@@ -41,9 +45,14 @@ class SubScreen(Screen):
         self.app.push_screen(self.pages[self.query_one(
             "#selector", OptionList).highlighted])
 
+    def action_back(self) -> None:
+        self.app.pop_screen()
+
+
+class SubScreen(DefaultScreen):
+    def footer(self) -> ComposeResult:
+        yield Button("Retour", id="go-back")
+
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "go-back":
             self.app.pop_screen()
-
-    def action_back(self) -> None:
-        self.app.pop_screen()
