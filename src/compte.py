@@ -4,9 +4,20 @@ from textual.widgets._option_list import Option
 
 
 class Account:
-    def __init__(self, numero: str):
+    def __init__(self, numero: str, pin_code: str):
         self.numero = numero
-        self.solde = 0
+        self._solde: float = 0
+        self.pin_code: str = pin_code
+
+    def get_solde(self):
+        return self._solde
+
+    def modify_solde(self, quantity: float) -> bool:
+        self._solde += quantity
+        return True
+
+    def correct_pin(self, pin_code: str) -> bool:
+        return self.pin_code == pin_code
 
 
 class MvolaOption:
@@ -18,7 +29,7 @@ class MvolaOption:
         self.quantity = quantity
 
     def apply(self, account: Account) -> Account:
-        account.solde -= self.price
+        account.modify_solde(-self.price)
         return account
 
     @staticmethod

@@ -21,6 +21,7 @@ structure = {
             },
         }
     },
+    "confirmation": components.InputPinCodeScreen,
 }
 
 
@@ -44,6 +45,6 @@ class MainApp(App):
 
 
 if __name__ == "__main__":
-    DefaultScreen.account = Account("032 12 345 67")
+    DefaultScreen.account = Account("032 12 345 67", "0000")
     app = MainApp()
     app.run()
