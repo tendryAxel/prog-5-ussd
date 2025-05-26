@@ -54,6 +54,7 @@ class OffreScreen(SubScreen):
         MvolaOption("MORA 2000", 2000, 4),
         MvolaOption("MORA 4000", 4000, 10),
     ]
+    current_option: MvolaOption = None
 
     @override
     def main(self) -> ComposeResult:
@@ -63,21 +64,18 @@ class OffreScreen(SubScreen):
             id="select",
         )
 
-    def on_mount(self) -> None:
-        self.app.push_screen("confirmation")
-
     @on(OptionList.OptionSelected)
     def update_account(self) -> None:
-        self.options[
-            self.query_one("#select", OptionList).highlighted
-        ].apply(self.account)
-        self.query_one("#solde", Static).update(
-            f"Votre solde : {self.account.get_solde()}")
+        self.app.push_screen(InputPinCodeScreen(self.options[self.query_one("#select", OptionList).highlighted]))
 
 
 class InputPinCodeScreen(SubScreen):
     name = "input pin code"
     error_text_id = "output_correct_pin"
+
+    def __init__(self, option: MvolaOption):
+        super().__init__()
+        self.option = option
 
     @override
     def main(self) -> ComposeResult:
@@ -92,6 +90,11 @@ class InputPinCodeScreen(SubScreen):
     def confirm(self, event: Input.Submitted) -> None:
         if self.account.correct_pin(event.value):
             self.app.pop_screen()
-        self.query_one(
-            f"#{self.error_text_id}",
-            Static).update("Incorrect pin code")
+            self._apply_option_to_account()
+        else:
+            self.query_one(
+                f"#{self.error_text_id}",
+                Static).update("Incorrect pin code")
+
+    def _apply_option_to_account(self):
+        self.option.apply(self.account)
